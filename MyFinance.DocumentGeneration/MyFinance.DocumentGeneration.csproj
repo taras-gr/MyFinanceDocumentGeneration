@@ -15,4 +15,10 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Domain\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyFinance.DocumentGeneration.Domain\MyFinance.DocumentGeneration.Domain.csproj" />
+  </ItemGroup>
 </Project>

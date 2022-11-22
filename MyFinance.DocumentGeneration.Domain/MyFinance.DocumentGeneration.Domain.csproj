@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspose.Words" Version="22.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Templates\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Templates\Template.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

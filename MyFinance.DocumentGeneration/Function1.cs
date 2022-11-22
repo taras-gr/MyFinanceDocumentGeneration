@@ -7,6 +7,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using MyFinance.DocumentGeneration.Domain.Aspose;
 
 namespace MyFinance.DocumentGeneration
 {
@@ -20,8 +22,13 @@ namespace MyFinance.DocumentGeneration
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string name = req.Query["name"];
+            var content = await new StreamReader(req.Body).ReadToEndAsync();
+            Dictionary<string, string> parsedContent = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+            var res = AsposeLicenseService.Test(parsedContent, null);
+
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
 
@@ -29,7 +36,7 @@ namespace MyFinance.DocumentGeneration
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
-            return new OkObjectResult(responseMessage);
+            return new FileContentResult(res, "application/pdf");
         }
     }
 }
