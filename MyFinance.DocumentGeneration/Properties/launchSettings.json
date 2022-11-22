@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "MyFinance.DocumentGeneration": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7046",
+      "launchBrowser": false
+    }
+  }
+}
