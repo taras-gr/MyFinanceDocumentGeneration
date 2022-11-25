@@ -8,26 +8,35 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using MyFinance.DocumentGeneration.Domain.Aspose;
+using MyFinance.DocumentGeneration.Domain.Services;
+using MyFinance.DocumentGeneration.Domain.Models;
 
 namespace MyFinance.DocumentGeneration
 {
-    public static class Function1
+    public class Function1
     {
+        private readonly IReportGenerationService _reportGenerationService;
+
+        public Function1(IReportGenerationService reportGenerationService)
+        {
+            _reportGenerationService = reportGenerationService;
+        }
+
         [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string name = req.Query["name"];
+
             var content = await new StreamReader(req.Body).ReadToEndAsync();
-            Dictionary<string, string> parsedContent = JsonConvert.DeserializeObject<Dictionary<string, string>>(content);
+            StatisticsByDateReportModel parsedContent = JsonConvert.DeserializeObject<StatisticsByDateReportModel>(content);
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-            var res = AsposeLicenseService.Test(parsedContent, null);
+            var result = _reportGenerationService.GenerateReportByDateStats(parsedContent);
 
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             name = name ?? data?.name;
@@ -36,7 +45,7 @@ namespace MyFinance.DocumentGeneration
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
-            return new FileContentResult(res, "application/pdf");
+            return new FileContentResult(result, "application/pdf");
         }
     }
 }
